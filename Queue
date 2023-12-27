@@ -1,0 +1,108 @@
+#include<iostream>
+using namespace std;
+//structure for Queue
+template<class T>
+struct queue
+{
+    T data;
+    struct queue* next;
+};
+
+
+//class for Queue
+template <class T>
+class MyQueue
+{
+    private:
+        struct queue<T>* first;
+        int icount;
+    public:
+        MyQueue();
+        ~MyQueue();
+        
+        void EnQueue(T);
+        int DeQueue();
+        void Display();
+        int Count();
+};
+//logic for queue
+template <class T>
+MyQueue<T>::MyQueue()
+{
+    first=NULL;
+    icount=0;
+}
+template <class T>
+void  MyQueue<T>::EnQueue(T ino)
+{
+    struct queue<T>* newn;
+    struct queue<T>* temp=first;
+    newn=new queue<T>;
+    newn->data=ino;
+    newn->next=NULL;
+    if(first==NULL)
+    {
+        first=newn;
+    }
+    else
+    {
+        while(temp->next!=NULL)
+        {
+            temp=temp->next;
+        }
+        temp->next=newn;
+    }
+    icount++;
+}
+template <class T>
+int  MyQueue<T>::DeQueue()
+{
+    int value=0;
+    struct queue<T>* temp=first;
+    if(first==NULL)
+    {
+        cout<<"Queue is already empty"<<endl;
+        return -1;
+    }
+    else
+    if(first->next==NULL)
+    {
+        delete first;
+        first=NULL;
+    }else
+    {
+        value=first->data;
+        first=first->next;
+        delete temp;
+    
+    }
+    icount--;
+    return value;
+}
+template <class T>
+void  MyQueue<T>::Display()
+{
+    struct queue<T>* temp=first;
+    for(int i=1;i<=icount;i++)
+    {
+        cout<<temp->data<<"||";
+        temp=temp->next;
+    }
+}
+template <class T>
+int  MyQueue<T>::Count()
+{
+    int icount=0;
+    struct queue<T>* temp=first;
+    for(int i=1;i<=icount;i++)
+    {
+        icount++;
+        temp=temp->next;
+    }
+    return icount;
+}
+template <class T>
+MyQueue<T>::~MyQueue()
+{
+    delete first;
+}

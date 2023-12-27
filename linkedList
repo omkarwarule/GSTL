@@ -1,0 +1,928 @@
+#include<iostream>
+using namespace std;
+// Structure for singly linear and singly circular 
+template <class T>
+struct NodeS
+{
+    T data;
+    struct NodeS *next;
+};
+// Structure for doubly linear and singly circular
+template <class T>
+struct NodeD
+{
+    T data;
+    struct NodeD *next;
+    struct NodeD *prev;
+};
+// Class of singly linear Linked list
+template <class T>
+class SinglyLL
+{
+    private:
+        struct NodeS<T> * first;
+        int icount;
+    public:   
+        SinglyLL();
+        ~SinglyLL();
+        
+        void InsertFirst(T);
+        void InsertLast(T);
+        void InsertAny(T,int);
+        
+        void DeleteFirst();
+        void DeleteLast();
+        void DeleteAny(int);
+        
+        void Display();
+        int Count();
+        int Sum();
+        int Max();
+        int Min();
+        int Avg();
+        NodeS<T>*  middleNode();
+        NodeS<T>*  Reverse();
+        bool isPalindrome();
+};
+//Logic of singly linear linked list
+template <class T>
+SinglyLL<T>::SinglyLL()
+{
+    first=NULL;
+    icount=0;
+}
+
+template<class T>
+void SinglyLL<T>::InsertFirst(T no)
+{
+    NodeS<T> * newn = new NodeS<T>;
+    newn->data=no;
+    newn->next=NULL;
+    if(first==NULL)
+    {
+        first=newn;
+    }
+    else
+    {
+        newn->next=first;
+        first=newn;
+    }
+    icount++;
+}
+template<class T>
+void SinglyLL<T>::InsertLast(T no)
+{
+    NodeS<T> * temp=first;
+    NodeS<T> * newn = new NodeS<T>;
+    newn->data=no;
+    newn->next=NULL;
+    if(first==NULL)
+    {
+        first=newn;
+    }
+    else
+    {
+        while(temp->next!=NULL)
+        {
+            temp=temp->next;
+        }
+        temp->next=newn;
+    }
+    icount++;
+}
+template <class T>
+void SinglyLL<T>::InsertAny(T no,int ipos)
+{
+    NodeS<T> * temp=first;
+    NodeS<T> * newn = new NodeS<T>;
+    newn->data=no;
+    newn->next=NULL;
+    int length=Count();
+    if(ipos==1)
+    {
+        InsertFirst(no);
+    }else
+    if(ipos==length+1)
+    {
+        InsertLast(no);
+    }else
+    {
+        for(int i=1;i<ipos-1;i++)
+        {
+            temp=temp->next;
+        }
+        newn->next=temp->next;
+        temp->next=newn;
+        icount++;
+        
+    }
+}
+template <class T>
+void SinglyLL<T>::DeleteFirst()
+{
+    NodeS<T> * temp=first;
+    
+    if(first==NULL)
+    {
+        cout<<"Your linked list is empty"<<endl;
+        return ;
+    }
+    else
+    if(first->next==NULL)
+    {
+        delete first;
+        first=NULL;
+    }
+    else
+    {
+        first=first->next;
+        delete temp;
+    }
+    icount--;
+}
+template <class T>
+void SinglyLL<T>::DeleteLast()
+{
+    NodeS<T> * temp=first;
+    if(first==NULL)
+    {
+        cout<<"Your linked list is empty"<<endl;
+        return ;
+    }
+    else
+    if(first->next==NULL)
+    {
+        delete first;
+        first=NULL;
+    }
+    else
+    {
+        while(temp->next->next!=NULL)
+        {
+            temp=temp->next;
+        }
+        temp->next=NULL;
+        delete temp->next;
+    }
+    icount--;
+}
+template <class T>
+void SinglyLL<T>::DeleteAny(int ipos)
+{
+    NodeS<T> * temp=first;
+    NodeS<T> * tempx=NULL;
+    int length=Count();
+    if(ipos==1)
+    {
+        DeleteFirst();
+    }else
+    if(ipos==length)
+    {
+        DeleteLast();
+    }else
+    {
+        for(int i=1;i<ipos-1;i++)
+        {
+            temp=temp->next;
+        }
+        tempx=temp->next;
+        temp->next=temp->next->next;
+        delete tempx;
+        icount--;
+        
+    }
+}
+template <class T>
+void SinglyLL<T>::Display()
+{
+     NodeS<T> *temp=first;
+    for(int i=1;i<=icount;i++)
+    {
+        cout<<temp->data<<"->";
+        temp=temp->next;
+    }
+}
+template <class T>
+int SinglyLL<T>::Count()
+{
+    return icount;
+}
+template <class T>
+int SinglyLL<T>::Sum()
+{
+    int sum=0;
+    NodeS<T> * temp=first;
+    while(temp!=NULL)
+    {
+        sum+=temp->data;
+        temp=temp->next;
+    }
+    return sum;
+}
+template <class T>
+int SinglyLL<T>::Max()
+{
+    int max=-32678;
+    NodeS<T> * temp=first;
+    while(temp!=NULL)
+    {
+        if(temp->data>max)
+        {
+            max=temp->data;
+        }
+        temp=temp->next;
+    }
+    return max;
+}
+
+template <class T>
+int SinglyLL<T>::Min()
+{
+    int min=first->data;
+    NodeS<T> * temp=first;
+    while(temp!=NULL)
+    {
+        if(temp->data<min)
+        {
+            min=temp->data;
+        }
+        temp=temp->next;
+    }
+    return min;
+}
+template <class T>
+NodeS<T>* SinglyLL<T>:: middleNode()
+{
+        if(first==NULL ||first->next==NULL)
+        {
+            return first;
+        }
+        NodeS<T>* slow=first;
+        NodeS<T>* fast=first->next;
+        int length=0;
+        while(fast->next!=NULL&& fast!=NULL && fast->next->next!=NULL)
+        {
+            fast=fast->next->next;
+            slow=slow->next;
+            length++;
+        }
+            
+        return slow->next;
+        
+}
+template <class T>
+NodeS<T>* SinglyLL<T>::Reverse()
+{
+        NodeS<T>* curr=first;
+        NodeS<T>* temp=NULL;
+        NodeS<T>* Nth=NULL;
+        while(curr!=NULL)
+        {
+            Nth=curr->next;
+            curr->next=temp;
+            temp=curr;
+            curr=Nth;
+        }
+            
+        return temp;
+        
+}
+template <class T>
+bool SinglyLL<T>::isPalindrome()
+{
+    bool result=true;
+        if(first->next==NULL)
+        {
+            return result;
+        }   
+        NodeS<T>* mid=middleNode(first);
+        NodeS<T>* temp=mid->next;
+        mid->next=Reverse(temp);
+        NodeS<T>* temp1=first;
+        NodeS<T>* temp2=mid->next;
+            while(temp2!=NULL)
+            {
+                if(temp1->val!=temp2->val)
+                {
+                    result=false;
+                    break;
+                }
+                temp2=temp2->next;
+                temp1=temp1->next;
+            }
+        return result;
+}
+template <class T>
+SinglyLL<T>::~SinglyLL()
+{
+    delete first;
+}
+
+// Class of singly circular Linked list
+template <class T>
+class SinglyCL
+{
+    private:
+        struct NodeS<T> * first;
+        struct NodeS<T> * last;
+        int icount;
+    public:
+        SinglyCL();
+        ~SinglyCL();
+        
+        void InsertFirst(T);
+        void InsertLast(T);
+        void InsertAny(T,int);
+        
+        void DeleteFirst();
+        void DeleteLast();
+        void DeleteAny(int);
+        
+        void Display();
+        int Count();
+        
+};
+//logic of singly circular linked list
+template <class T>
+SinglyCL<T>::SinglyCL()
+{
+    first=NULL;
+    last=NULL;
+    icount=0;
+}
+
+template<class T>
+void SinglyCL<T>::InsertFirst(T no)
+{
+    NodeS<T> * newn = new NodeS<T>;
+    newn->data=no;
+    newn->next=NULL;
+    if(first==NULL && last==NULL)
+    {
+        first=newn;
+        last=newn;
+    }
+    else
+    {
+        newn->next=first;
+        first=newn;
+    }
+    last->next=first;
+    icount++;
+}
+template<class T>
+void SinglyCL<T>::InsertLast(T no)
+{
+    NodeS<T> * newn = new NodeS<T>;
+    newn->data=no;
+    newn->next=NULL;
+    if(first==NULL && last==NULL)
+    {
+        first=newn;
+        last=newn;
+    }
+    else
+    {
+        last->next=newn;
+        last=newn;
+    }
+    last->next=first;
+    icount++;
+}
+template <class T>
+void SinglyCL<T>::InsertAny(T no,int ipos)
+{
+    NodeS<T> * temp=first;
+    NodeS<T> * newn = new NodeS<T>;
+    newn->data=no;
+    newn->next=NULL;
+    int length=Count();
+    if(ipos==1)
+    {
+        InsertFirst(no);
+    }else
+    if(ipos==length+1)
+    {
+        InsertLast(no);
+    }else
+    {
+        for(int i=1;i<ipos-1;i++)
+        {
+            temp=temp->next;
+        }
+        newn->next=temp->next;
+        temp->next=newn;
+        icount++;
+        
+    }
+}
+template <class T>
+void SinglyCL<T>::DeleteFirst()
+{
+    
+    
+    if(first==NULL && last==NULL)
+    {
+        cout<<"Your linked list is empty"<<endl;
+        return ;
+    }
+    else
+    if(first==last)
+    {
+        delete first;
+        first=NULL;
+        last=NULL;
+    }
+    else
+    {
+        first=first->next;
+        delete last->next;
+    }
+    last->next=first;
+    icount--;
+}
+template <class T>
+void SinglyCL<T>::DeleteLast()
+{
+    NodeS<T> * temp=first;
+    if(first==NULL && last==NULL)
+    {
+        cout<<"Your linked list is already empty"<<endl;
+        return ;
+    }
+    else
+    if(first==last)
+    {
+        delete first;
+        first=NULL;
+        last=NULL;
+    }
+    else
+    {
+        while(temp->next!=last)
+        {
+            temp=temp->next;
+        }
+        temp->next=NULL;
+        delete temp->next;
+        last=temp;
+    }
+    last->next=first;
+    icount--;
+}
+template <class T>
+void SinglyCL<T>::DeleteAny(int ipos)
+{
+    NodeS<T> * temp=first;
+    NodeS<T> * tempx=NULL;
+    int length=Count();
+    if(ipos==1)
+    {
+        DeleteFirst();
+    }else
+    if(ipos==length)
+    {
+        DeleteLast();
+    }else
+    {
+        for(int i=1;i<ipos-1;i++)
+        {
+            temp=temp->next;
+        }
+        tempx=temp->next;
+        temp->next=temp->next->next;
+        delete tempx;
+        icount--;
+        
+    }
+}
+template <class T>
+void SinglyCL<T>::Display()
+{
+     NodeS<T> *temp=first;
+    for(int i=1;i<=icount;i++)
+    {
+        cout<<temp->data<<"->";
+        temp=temp->next;
+    }
+}
+template <class T>
+int SinglyCL<T>::Count()
+{
+    return icount;
+}
+template <class T>
+SinglyCL<T>::~SinglyCL()
+{
+    delete first;
+    
+}
+// Class of doubly linear Linked list
+template <class T>
+class DoublyLL
+{
+    private:
+        struct NodeD<T> * first;
+        int icount;
+    public:
+         DoublyLL();
+        ~DoublyLL();
+        
+        void InsertFirst(T);
+        void InsertLast(T);
+        void InsertAny(T,int);
+        
+        void DeleteFirst();
+        void DeleteLast();
+        void DeleteAny(int);
+        
+        void Display();
+        int Count();
+
+    
+};
+//logic of doubly linear linked list
+template <class T>
+DoublyLL<T>::DoublyLL()
+{
+    first=NULL;
+    icount=0;
+}
+
+template<class T>
+void DoublyLL<T>::InsertFirst(T no)
+{
+    NodeD<T> * newn = new NodeD<T>;
+    newn->data=no;
+    newn->next=NULL;
+    newn->prev=NULL;
+    if(first==NULL)
+    {
+        first=newn;
+    }
+    else
+    {
+        newn->next=first;
+        first->prev=newn;
+        first=newn;
+    }
+    icount++;
+}
+template<class T>
+void DoublyLL<T>::InsertLast(T no)
+{
+    NodeD<T> * temp=first;
+    NodeD<T> * newn = new NodeD<T>;
+    newn->data=no;
+    newn->next=NULL;
+    newn->prev=NULL;
+    if(first==NULL)
+    {
+        first=newn;
+    }
+    else
+    {
+        while(temp->next!=NULL)
+        {
+            temp=temp->next;
+        }
+        newn->prev=temp;
+        temp->next=newn;
+    }
+    icount++;
+}
+template <class T>
+void DoublyLL<T>::InsertAny(T no,int ipos)
+{
+    NodeD<T> * temp=first;
+    NodeD<T> * newn = new NodeD<T>;
+    newn->data=no;
+    newn->next=NULL;
+    newn->prev=NULL;
+    int length=Count();
+    if(ipos==1)
+    {
+        InsertFirst(no);
+    }else
+    if(ipos==length+1)
+    {
+        InsertLast(no);
+    }else
+    {
+        for(int i=1;i<ipos-1;i++)
+        {
+            temp=temp->next;
+        }
+        newn->next=temp->next;
+        temp->next->prev=newn;
+        temp->next=newn;
+        newn->prev=temp;
+        icount++;
+        
+    }
+}
+template <class T>
+void DoublyLL<T>::DeleteFirst()
+{
+    
+    if(first==NULL)
+    {
+        cout<<"Your linked list is empty"<<endl;
+        return ;
+    }
+    else
+    if(first->next==NULL)
+    {
+        delete first;
+        first=NULL;
+    }
+    else
+    {
+        first=first->next;
+        delete first->prev;
+        first->prev=NULL;
+    }
+    icount--;
+}
+template <class T>
+void DoublyLL<T>::DeleteLast()
+{
+    NodeD<T> * temp=first;
+    if(first==NULL)
+    {
+        cout<<"Your linked list is empty"<<endl;
+        return ;
+    }
+    else
+    if(first->next==NULL)
+    {
+        delete first;
+        first=NULL;
+    }
+    else
+    {
+        while(temp->next->next!=NULL)
+        {
+            temp=temp->next;
+        }
+        temp->next=NULL;
+        delete temp->next;
+    }
+    icount--;
+}
+template <class T>
+void DoublyLL<T>::DeleteAny(int ipos)
+{
+    NodeD<T> * temp=first;
+    NodeD<T> * tempx=NULL;
+    int length=Count();
+    if(ipos==1)
+    {
+        DeleteFirst();
+    }else
+    if(ipos==length)
+    {
+        DeleteLast();
+    }else
+    {
+        for(int i=1;i<ipos-1;i++)
+        {
+            temp=temp->next;
+        }
+        temp->next=temp->next->next;
+        delete temp->next->prev;
+        temp->next->prev=temp;
+        icount--;
+        
+    }
+}
+template <class T>
+void DoublyLL<T>::Display()
+{
+     NodeD<T> *temp=first;
+    for(int i=1;i<=icount;i++)
+    {
+        cout<<temp->data<<"->";
+        temp=temp->next;
+    }
+}
+template <class T>
+int DoublyLL<T>::Count()
+{
+    return icount;
+}
+template <class T>
+DoublyLL<T>::~DoublyLL()
+{
+    delete first;
+}
+
+
+// Class of doubly cicular Linked list
+template <class T>
+class DoublyCL
+{
+    private:
+        struct NodeD<T> * first;
+        struct NodeD<T> * last;
+        int icount;
+    public:
+        DoublyCL();
+        ~DoublyCL();
+        
+        void InsertFirst(T);
+        void InsertLast(T);
+        void InsertAny(T,int);
+        
+        void DeleteFirst();
+        void DeleteLast();
+        void DeleteAny(int);
+        
+        void Display();
+        int Count();
+};
+//logic of doubly circular
+template <class T>
+DoublyCL<T>::DoublyCL()
+{
+    first=NULL;
+    last=NULL;
+    icount=0;
+}
+
+template<class T>
+void DoublyCL<T>::InsertFirst(T no)
+{
+    NodeD<T> * newn = new NodeD<T>;
+    newn->data=no;
+    newn->next=NULL;
+    newn->prev=NULL;
+    if(first==NULL && last==NULL)
+    {
+        first=newn;
+        last=newn;
+    }
+    else
+    {
+        newn->next=first;
+        first->prev=newn;
+        first=newn;
+    }
+    last->next=first;
+    first->prev=last;
+    icount++;
+}
+template<class T>
+void DoublyCL<T>::InsertLast(T no)
+{
+    
+    NodeD<T> * newn = new NodeD<T>;
+    newn->data=no;
+    newn->next=NULL;
+    newn->prev=NULL;
+    if(first==NULL && last==NULL)
+    {
+        first=newn;
+        last=newn;
+    }
+    else
+    {
+        last->next=newn;
+        newn->prev=last;
+        last=newn;
+    }
+    last->next=first;
+    first->prev=last;
+    icount++;
+}
+template <class T>
+void DoublyCL<T>::InsertAny(T no,int ipos)
+{
+    NodeD<T> * temp=first;
+    NodeD<T> * newn = new NodeD<T>;
+    newn->data=no;
+    newn->next=NULL;
+    newn->prev=NULL;
+    int length=Count();
+    if(ipos==1)
+    {
+        InsertFirst(no);
+    }else
+    if(ipos==length+1)
+    {
+        InsertLast(no);
+    }else
+    {
+        for(int i=1;i<ipos-1;i++)
+        {
+            temp=temp->next;
+        }
+        newn->next=temp->next;
+        temp->next->prev=newn;
+        temp->next=newn;
+        newn->prev=temp;
+        icount++;
+        
+    }
+}
+template <class T>
+void DoublyCL<T>::DeleteFirst()
+{
+    
+    if(first==NULL && last==NULL)
+    {
+        cout<<"Your linked list is empty"<<endl;
+        return ;
+    }
+    else
+    if(first==last)
+    {
+        delete first;
+        first=NULL;
+        last=NULL;
+    }
+    else
+    {
+        first=first->next;
+        delete first->prev;
+        first->prev=NULL;
+    }
+    last->next=first;
+    first->prev=last;
+    icount--;
+}
+template <class T>
+void DoublyCL<T>::DeleteLast()
+{
+    NodeD<T> * temp=first;
+    if(first==NULL && last==NULL)
+    {
+        cout<<"Your linked list is empty"<<endl;
+        return ;
+    }
+    else
+    if(first==last)
+    {
+        delete first;
+        first=NULL;
+        last=NULL;
+    }
+    else
+    {
+        while(temp->next!=last)
+        {
+            temp=temp->next;
+        }
+        temp->next=NULL;
+        delete temp->next;
+    }
+    last->next=first;
+    first->prev=last;
+    icount--;
+}
+template <class T>
+void DoublyCL<T>::DeleteAny(int ipos)
+{
+    NodeD<T> * temp=first;
+    NodeD<T> * tempx=NULL;
+    int length=Count();
+    if(ipos==1)
+    {
+        DeleteFirst();
+    }else
+    if(ipos==length)
+    {
+        DeleteLast();
+    }else
+    {
+        for(int i=1;i<ipos-1;i++)
+        {
+            temp=temp->next;
+        }
+        temp->next=temp->next->next;
+        delete temp->next->prev;
+        temp->next->prev=temp;
+        icount--;
+        
+    }
+}
+template <class T>
+void DoublyCL<T>::Display()
+{
+     NodeD<T> *temp=first;
+    for(int i=1;i<=icount;i++)
+    {
+        cout<<temp->data<<"->";
+        temp=temp->next;
+    }
+}
+template <class T>
+int DoublyCL<T>::Count()
+{
+    return icount;
+}
+template <class T>
+DoublyCL<T>::~DoublyCL()
+{
+    delete first;
+}
